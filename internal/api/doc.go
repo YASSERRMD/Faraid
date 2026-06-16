@@ -1,5 +1,6 @@
-// Package api exposes the HTTP surface of the service: the deterministic
-// solve endpoint, case CRUD, multi-madhhab comparison, export, and the gated
-// trial explain endpoint. Handlers are introduced from Phase 32 onward and
-// follow the OpenAPI 3.1 contract under openapi/.
+// Package api exposes the HTTP surface of the service following the OpenAPI
+// contract under openapi/. It serves the deterministic solve endpoint, the
+// multi-madhhab comparison, case CRUD, export, and the gated trial explain
+// endpoint, mapping requests to the core engine and results back to the
+// contract's data transfer objects.
 package api
