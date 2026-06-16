@@ -35,8 +35,13 @@ func (s *Server) WithLLM(c llm.Completer) *Server {
 }
 
 // Router returns the HTTP handler mounting every endpoint under /api/v1.
+// Requests are subject to security headers, a 512 KiB body size limit, and a
+// per-IP rate limit of 120 requests per minute.
 func (s *Server) Router() http.Handler {
 	r := chi.NewRouter()
+	r.Use(secureHeaders)
+	r.Use(requestSizeLimit(512 * 1024))
+	r.Use(rateLimit(120))
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Get("/healthz", s.handleHealth)
 		r.Get("/madhahib", s.handleMadhahib)
