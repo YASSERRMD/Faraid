@@ -16,6 +16,7 @@ type comparisonDTO struct {
 }
 
 func (s *Server) handleCompare(w http.ResponseWriter, r *http.Request) {
+	metricCompareTotal.Add(1)
 	var req solveRequest // the madhhab field is ignored here
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid JSON body")

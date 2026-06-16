@@ -24,6 +24,7 @@ func (failStore) ListCases(context.Context) ([]store.SavedCase, error) {
 	return nil, errors.New("boom")
 }
 func (failStore) DeleteCase(context.Context, string) error { return errors.New("boom") }
+func (failStore) Ping(context.Context) error               { return errors.New("boom") }
 
 // corruptStore succeeds but returns cases whose stored input is not valid JSON.
 type corruptStore struct{}
@@ -38,6 +39,7 @@ func (corruptStore) ListCases(context.Context) ([]store.SavedCase, error) {
 	return []store.SavedCase{{ID: "x", Input: json.RawMessage("{bad")}}, nil
 }
 func (corruptStore) DeleteCase(context.Context, string) error { return nil }
+func (corruptStore) Ping(context.Context) error               { return nil }
 
 func statusFor(srv *Server, method, path, body string) int {
 	rec := httptest.NewRecorder()

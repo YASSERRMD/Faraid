@@ -11,6 +11,14 @@ func (s *Server) handleHealth(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 }
 
+func (s *Server) handleReadyz(w http.ResponseWriter, r *http.Request) {
+	if err := s.store.Ping(r.Context()); err != nil {
+		writeError(w, http.StatusServiceUnavailable, "store unavailable")
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]string{"status": "ready"})
+}
+
 func (s *Server) handleMadhahib(w http.ResponseWriter, _ *http.Request) {
 	out := make([]madhhabDTO, 0, 4)
 	for _, m := range solver.Madhahib() {
@@ -20,18 +28,22 @@ func (s *Server) handleMadhahib(w http.ResponseWriter, _ *http.Request) {
 }
 
 func (s *Server) handleSolve(w http.ResponseWriter, r *http.Request) {
+	metricSolveTotal.Add(1)
 	var req solveRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		metricSolveErrors.Add(1)
 		writeError(w, http.StatusBadRequest, "invalid JSON body")
 		return
 	}
 	c, m, err := toCase(req)
 	if err != nil {
+		metricSolveErrors.Add(1)
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	result, err := solver.Solve(c, m)
 	if err != nil {
+		metricSolveErrors.Add(1)
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}

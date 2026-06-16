@@ -29,6 +29,26 @@ func (p *Postgres) Close() {
 	p.pool.Close()
 }
 
+// Ping verifies the connection pool can reach the database.
+func (p *Postgres) Ping(ctx context.Context) error {
+	return p.pool.Ping(ctx)
+}
+
+// Migrate creates the cases table if it does not already exist. It is safe to
+// call on every startup.
+func (p *Postgres) Migrate(ctx context.Context) error {
+	_, err := p.pool.Exec(ctx, `
+		CREATE TABLE IF NOT EXISTS cases (
+			id         TEXT PRIMARY KEY,
+			name       TEXT NOT NULL,
+			input      JSONB NOT NULL,
+			result     JSONB,
+			created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+		)
+	`)
+	return err
+}
+
 // nullableJSON returns nil for empty JSON so it is stored as SQL NULL.
 func nullableJSON(j json.RawMessage) []byte {
 	if len(j) == 0 {

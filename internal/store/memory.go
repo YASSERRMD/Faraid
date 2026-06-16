@@ -36,6 +36,9 @@ func (m *Memory) SaveCase(_ context.Context, name string, input, result json.Raw
 	return sc, nil
 }
 
+// Ping always returns nil; the in-memory store is always available.
+func (m *Memory) Ping(_ context.Context) error { return nil }
+
 // GetCase returns the case with the given id, or ErrNotFound.
 func (m *Memory) GetCase(_ context.Context, id string) (SavedCase, error) {
 	m.mu.Lock()
