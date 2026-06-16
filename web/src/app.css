@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/*
+  Faraid theme: logical properties throughout so RTL is automatic when
+  the `dir` attribute on <html> flips to "rtl".
+*/
+@theme {
+  --color-primary: oklch(42% 0.18 250);
+  --color-primary-hover: oklch(38% 0.18 250);
+  --color-surface: oklch(98% 0 0);
+  --color-border: oklch(88% 0 0);
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: "Noto Naskh Arabic", "Scheherazade New", ui-serif, serif;
+}
+
+html {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+}
+
+html[lang="ar"] {
+  font-family: var(--font-arabic);
+}
