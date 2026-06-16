@@ -3,6 +3,7 @@ package llm
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"sync"
 	"time"
 )
@@ -19,20 +20,24 @@ type ControlsOptions struct {
 	// RequestsPerMinute limits LLM calls within a 60-second window. 0 disables
 	// the rate limit.
 	RequestsPerMinute int
+	// Logger receives one Info log per completed LLM call with prompt length,
+	// max_tokens, response length, latency, and any error. Nil disables logging.
+	Logger *slog.Logger
 }
 
 // Controls wraps a Completer with cost, rate, and audit guards. It is
 // goroutine-safe. Build it with NewControls, then pass it wherever a Completer
 // is expected.
 type Controls struct {
-	inner Completer
-	cap   int
-	rate  *fixedWindowLimiter
+	inner  Completer
+	cap    int
+	rate   *fixedWindowLimiter
+	logger *slog.Logger
 }
 
 // NewControls wraps inner with the given controls.
 func NewControls(inner Completer, opts ControlsOptions) *Controls {
-	c := &Controls{inner: inner, cap: opts.TokenCap}
+	c := &Controls{inner: inner, cap: opts.TokenCap, logger: opts.Logger}
 	if opts.RequestsPerMinute > 0 {
 		c.rate = newFixedWindowLimiter(opts.RequestsPerMinute, time.Now)
 	}
@@ -50,7 +55,18 @@ func (c *Controls) Complete(ctx context.Context, req Request) (Response, error) 
 			return Response{}, err
 		}
 	}
-	return c.inner.Complete(ctx, req)
+	start := time.Now()
+	resp, err := c.inner.Complete(ctx, req)
+	if c.logger != nil {
+		c.logger.Info("llm call",
+			"prompt_len", len(req.Prompt),
+			"max_tokens", req.MaxTokens,
+			"resp_len", len(resp.Text),
+			"latency_ms", time.Since(start).Milliseconds(),
+			"err", err,
+		)
+	}
+	return resp, err
 }
 
 // fixedWindowLimiter enforces a count limit within a rolling 60-second window.
