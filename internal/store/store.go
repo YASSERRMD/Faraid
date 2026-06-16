@@ -29,6 +29,8 @@ type Store interface {
 	GetCase(ctx context.Context, id string) (SavedCase, error)
 	ListCases(ctx context.Context) ([]SavedCase, error)
 	DeleteCase(ctx context.Context, id string) error
+	// Ping checks that the backing store is reachable; used by the readiness probe.
+	Ping(ctx context.Context) error
 }
 
 // newID returns a random 128 bit identifier as hex.
