@@ -1,6 +1,7 @@
 package api
 
 import (
+	"expvar"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -44,6 +45,7 @@ func (s *Server) Router() http.Handler {
 	r.Use(rateLimit(120))
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Get("/healthz", s.handleHealth)
+		r.Get("/readyz", s.handleReadyz)
 		r.Get("/madhahib", s.handleMadhahib)
 		r.Post("/solve", s.handleSolve)
 		r.Post("/compare", s.handleCompare)
@@ -57,5 +59,9 @@ func (s *Server) Router() http.Handler {
 		r.Post("/parse", s.handleParse)
 		r.Post("/explain", s.handleExplain)
 	})
+	// Expose runtime counters for monitoring. This endpoint is intentionally
+	// not under /api/v1 so it can be restricted to an internal network in
+	// production without affecting the API prefix.
+	r.Get("/debug/vars", expvar.Handler().ServeHTTP)
 	return r
 }
