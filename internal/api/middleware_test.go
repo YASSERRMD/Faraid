@@ -18,11 +18,11 @@ func TestSecureHeaders(t *testing.T) {
 	secureHeaders(okHandler).ServeHTTP(w, r)
 
 	want := map[string]string{
-		"X-Content-Type-Options": "nosniff",
-		"X-Frame-Options":        "DENY",
+		"X-Content-Type-Options":  "nosniff",
+		"X-Frame-Options":         "DENY",
 		"Content-Security-Policy": "default-src 'self'",
-		"Referrer-Policy":        "same-origin",
-		"Permissions-Policy":     "interest-cohort=()",
+		"Referrer-Policy":         "same-origin",
+		"Permissions-Policy":      "interest-cohort=()",
 	}
 	for header, val := range want {
 		if got := w.Header().Get(header); got != val {
@@ -35,7 +35,7 @@ func TestRequestSizeLimitAllows(t *testing.T) {
 	body := strings.NewReader(`{"key":"value"}`)
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodPost, "/", body)
-	requestSizeLimit(512 * 1024)(okHandler).ServeHTTP(w, r)
+	requestSizeLimit(512*1024)(okHandler).ServeHTTP(w, r)
 	if w.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d", w.Code)
 	}
@@ -47,7 +47,7 @@ func TestRequestSizeLimitRejectsOnRead(t *testing.T) {
 	r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader(large))
 
 	// The handler that actually reads the body is where the limit fires.
-	handler := requestSizeLimit(512*1024)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := requestSizeLimit(512 * 1024)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		buf := make([]byte, 600*1024)
 		n, err := r.Body.Read(buf)
 		if err == nil && n == 600*1024 {
