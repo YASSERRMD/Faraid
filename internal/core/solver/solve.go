@@ -65,5 +65,7 @@ func Solve(c estate.Case, m Madhhab) (Result, error) {
 	}
 	sort.Slice(result.Excluded, func(i, j int) bool { return result.Excluded[i] < result.Excluded[j] })
 
+	result.Derivation = buildDerivation(c, result)
+
 	return result, nil
 }

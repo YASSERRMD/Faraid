@@ -1,7 +1,9 @@
 // Package derivation emits the structured, step-by-step audit trail for every
 // result.
 //
-// Each solver stage appends a typed step recording its inputs, the rule
-// reference, and the output fraction, so a result can be fully explained and
-// independently verified. The emitter is introduced in Phase 28.
+// A Derivation is an ordered list of typed Steps, each recording one stage of
+// the computation: the heir it concerns, a human-readable detail, a source
+// reference, and the resulting fraction. The solver builds a Derivation
+// alongside each result so the outcome can be explained and independently
+// verified.
 package derivation
