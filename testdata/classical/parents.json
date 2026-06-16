@@ -1,0 +1,66 @@
+[
+  {
+    "name": "mother father and son",
+    "reference": "Quran 4:11",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"mother": 1, "father": 1, "son": 1},
+    "expected": {"mother": "1/6", "father": "1/6", "son": "2/3"}
+  },
+  {
+    "name": "mother and father only",
+    "reference": "Quran 4:11, residuary father",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"mother": 1, "father": 1},
+    "expected": {"mother": "1/3", "father": "2/3"}
+  },
+  {
+    "name": "mother father and two brothers",
+    "reference": "siblings reduce the mother",
+    "deceasedSex": "male",
+    "madhhab": "Shafii",
+    "heirs": {"mother": 1, "father": 1, "full brother": 2},
+    "expected": {"mother": "1/6", "father": "5/6"}
+  },
+  {
+    "name": "father mother and daughter",
+    "reference": "Quran 4:11",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"father": 1, "mother": 1, "daughter": 1},
+    "expected": {"daughter": "1/2", "mother": "1/6", "father": "1/3"}
+  },
+  {
+    "name": "maternal grandmother and son",
+    "reference": "grandmother one sixth",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"maternal grandmother": 1, "son": 1},
+    "expected": {"maternal grandmother": "1/6", "son": "5/6"}
+  },
+  {
+    "name": "paternal grandfather and son",
+    "reference": "grandfather as father substitute",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"paternal grandfather": 1, "son": 1},
+    "expected": {"paternal grandfather": "1/6", "son": "5/6"}
+  },
+  {
+    "name": "both grandmothers and son",
+    "reference": "grandmothers share one sixth",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"maternal grandmother": 1, "paternal grandmother": 1, "son": 1},
+    "expected": {"maternal grandmother": "1/12", "paternal grandmother": "1/12", "son": "5/6"}
+  },
+  {
+    "name": "mother and two daughters with radd",
+    "reference": "radd",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"mother": 1, "daughter": 2},
+    "expected": {"mother": "1/5", "daughter": "4/5"}
+  }
+]

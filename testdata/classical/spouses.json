@@ -1,0 +1,67 @@
+[
+  {
+    "name": "husband and full sister",
+    "reference": "Quran 4:12, 4:176",
+    "deceasedSex": "female",
+    "madhhab": "Hanafi",
+    "heirs": {"husband": 1, "full sister": 1},
+    "expected": {"husband": "1/2", "full sister": "1/2"},
+    "base": 2
+  },
+  {
+    "name": "husband and son",
+    "reference": "Quran 4:12",
+    "deceasedSex": "female",
+    "madhhab": "Maliki",
+    "heirs": {"husband": 1, "son": 1},
+    "expected": {"husband": "1/4", "son": "3/4"}
+  },
+  {
+    "name": "wife and son",
+    "reference": "Quran 4:12",
+    "deceasedSex": "male",
+    "madhhab": "Shafii",
+    "heirs": {"wife": 1, "son": 1},
+    "expected": {"wife": "1/8", "son": "7/8"}
+  },
+  {
+    "name": "four wives and son",
+    "reference": "Quran 4:12",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"wife": 4, "son": 1},
+    "expected": {"wife": "1/8", "son": "7/8"}
+  },
+  {
+    "name": "husband son and daughter",
+    "reference": "Quran 4:11, 4:12",
+    "deceasedSex": "female",
+    "madhhab": "Hanafi",
+    "heirs": {"husband": 1, "son": 1, "daughter": 1},
+    "expected": {"husband": "1/4", "son": "1/2", "daughter": "1/4"}
+  },
+  {
+    "name": "wife daughter and father",
+    "reference": "Quran 4:11, 4:12",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"wife": 1, "daughter": 1, "father": 1},
+    "expected": {"wife": "1/8", "daughter": "1/2", "father": "3/8"}
+  },
+  {
+    "name": "husband and daughter with radd",
+    "reference": "radd, spouse excluded",
+    "deceasedSex": "female",
+    "madhhab": "Hanbali",
+    "heirs": {"husband": 1, "daughter": 1},
+    "expected": {"husband": "1/4", "daughter": "3/4"}
+  },
+  {
+    "name": "wife and daughter with radd",
+    "reference": "radd, spouse excluded",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"wife": 1, "daughter": 1},
+    "expected": {"wife": "1/8", "daughter": "7/8"}
+  }
+]

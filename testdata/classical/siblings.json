@@ -1,0 +1,68 @@
+[
+  {
+    "name": "husband mother and one uterine sister",
+    "reference": "one sibling does not reduce the mother",
+    "deceasedSex": "female",
+    "madhhab": "Hanafi",
+    "heirs": {"husband": 1, "mother": 1, "uterine sister": 1},
+    "expected": {"husband": "1/2", "mother": "1/3", "uterine sister": "1/6"}
+  },
+  {
+    "name": "husband mother and two uterine siblings",
+    "reference": "Quran 4:12",
+    "deceasedSex": "female",
+    "madhhab": "Maliki",
+    "heirs": {"husband": 1, "mother": 1, "uterine brother": 2},
+    "expected": {"husband": "1/2", "mother": "1/6", "uterine brother": "1/3"}
+  },
+  {
+    "name": "husband two full sisters and consanguine sister",
+    "reference": "completion then awl to 7",
+    "deceasedSex": "female",
+    "madhhab": "Shafii",
+    "heirs": {"husband": 1, "full sister": 1, "consanguine sister": 1},
+    "expected": {"husband": "3/7", "full sister": "3/7", "consanguine sister": "1/7"},
+    "base": 7
+  },
+  {
+    "name": "full sister and consanguine sister with radd",
+    "reference": "completion, then radd",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"full sister": 1, "consanguine sister": 1},
+    "expected": {"full sister": "3/4", "consanguine sister": "1/4"}
+  },
+  {
+    "name": "full brother and full sister",
+    "reference": "residuary two to one",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"full brother": 1, "full sister": 1},
+    "expected": {"full brother": "2/3", "full sister": "1/3"}
+  },
+  {
+    "name": "two full sisters with radd",
+    "reference": "Quran 4:176, then radd",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"full sister": 2},
+    "expected": {"full sister": "1"}
+  },
+  {
+    "name": "daughter and full sister maa ghayrihi",
+    "reference": "sister residuary with a daughter",
+    "deceasedSex": "male",
+    "madhhab": "Shafii",
+    "heirs": {"daughter": 1, "full sister": 1},
+    "expected": {"daughter": "1/2", "full sister": "1/2"}
+  },
+  {
+    "name": "husband mother full sister",
+    "reference": "awl to 8",
+    "deceasedSex": "female",
+    "madhhab": "Hanbali",
+    "heirs": {"husband": 1, "mother": 1, "full sister": 2},
+    "expected": {"husband": "3/8", "mother": "1/8", "full sister": "1/2"},
+    "base": 8
+  }
+]
