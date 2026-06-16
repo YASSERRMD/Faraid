@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { t } from '$lib/i18n';
 	import { faraidClient } from '$lib/client';
 	import type { components } from '$lib/client';
@@ -8,6 +10,7 @@
 	import DerivationPanel from '$lib/components/DerivationPanel.svelte';
 	import ExplainButton from '$lib/components/ExplainButton.svelte';
 	import NLEntry from '$lib/components/NLEntry.svelte';
+	import ResultActions from '$lib/components/ResultActions.svelte';
 	import { validate, type Counts } from '$lib/heirs';
 
 	type SolveResult = components['schemas']['SolveResult'];
@@ -30,6 +33,20 @@
 		sex = parsedSex;
 		counts = parsedCounts;
 	}
+
+	onMount(async () => {
+		const caseId = $page.url.searchParams.get('case');
+		if (!caseId) return;
+		const { data } = await faraidClient.GET('/cases/{id}', {
+			params: { path: { id: caseId } }
+		});
+		if (!data) return;
+		sex = data.input.deceasedSex;
+		madhhab = data.input.madhhab as Madhhab;
+		counts = Object.fromEntries(
+			Object.entries(data.input.heirs ?? {}).filter(([, v]) => typeof v === 'number' && v > 0)
+		) as Counts;
+	});
 
 	// Live validation: recomputed on every state change.
 	const errors = $derived(validate(counts, sex));
@@ -69,7 +86,7 @@
 				: JSON.stringify(error);
 		} else {
 			result = data ?? null;
-		if (result) lastRequest = { deceasedSex: sex, heirs, madhhab };
+			if (result) lastRequest = { deceasedSex: sex, heirs, madhhab };
 		}
 	}
 </script>
@@ -160,6 +177,10 @@
 
 			{#if result.needsReview}
 				<p class="mt-4 text-sm text-amber-600">{$t('result.needs_review')}</p>
+			{/if}
+
+			{#if lastRequest}
+				<ResultActions request={lastRequest} />
 			{/if}
 
 			{#if result.derivation && result.derivation.length > 0}
