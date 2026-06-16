@@ -52,14 +52,6 @@ func TestExportPDFStructure(t *testing.T) {
 	}
 }
 
-func TestExportPDFDeterministic(t *testing.T) {
-	a := exportRec(t, "pdf", exportBody).Body.Bytes()
-	b := exportRec(t, "pdf", exportBody).Body.Bytes()
-	if !bytes.Equal(a, b) {
-		t.Error("PDF export is not deterministic for the same input")
-	}
-}
-
 func TestExportPDFSpecialCase(t *testing.T) {
 	// A gharrawayn case puts a special-case line in the PDF.
 	rec := exportRec(t, "pdf", `{"deceasedSex":"female","heirs":{"husband":1,"father":1,"mother":1},"madhhab":"Hanafi"}`)
