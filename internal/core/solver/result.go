@@ -3,6 +3,7 @@ package solver
 import (
 	"math/big"
 
+	"github.com/YASSERRMD/Faraid/internal/core/derivation"
 	"github.com/YASSERRMD/Faraid/internal/core/heir"
 	"github.com/YASSERRMD/Faraid/internal/core/rational"
 )
@@ -41,6 +42,8 @@ type Result struct {
 	// NeedsReview marks a result that this engine does not fully resolve.
 	NeedsReview bool
 	ReviewNotes []string
+	// Derivation is the ordered, step-by-step audit trail of the result.
+	Derivation *derivation.Derivation
 }
 
 // shareMeta carries the non-share outcome of the share computation.
