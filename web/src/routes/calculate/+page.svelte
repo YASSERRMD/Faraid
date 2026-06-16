@@ -2,27 +2,62 @@
 	import { t } from '$lib/i18n';
 	import { faraidClient } from '$lib/client';
 	import type { components } from '$lib/client';
+	import DeceasedSection from '$lib/components/DeceasedSection.svelte';
+	import EstateSection from '$lib/components/EstateSection.svelte';
+	import HeirsSection from '$lib/components/HeirsSection.svelte';
+	import { validate, type Counts } from '$lib/heirs';
 
 	type SolveResult = components['schemas']['SolveResult'];
 
+	type Madhhab = 'Hanafi' | 'Maliki' | 'Shafii' | 'Hanbali';
+	let sex = $state<'male' | 'female'>('male');
+	let madhhab = $state<Madhhab>('Hanafi');
+	let total = $state(0);
+	let funeral = $state(0);
+	let debts = $state(0);
+	let bequests = $state(0);
+	let counts = $state<Counts>({});
+
 	let result = $state<SolveResult | null>(null);
-	let error = $state<string | null>(null);
+	let submitError = $state<string | null>(null);
 	let loading = $state(false);
 
-	// Minimal smoke call: will be replaced by the full heir-builder form in Phase 43.
-	async function smokeTest() {
+	// Live validation: recomputed on every state change.
+	const errors = $derived(validate(counts, sex));
+	const canSubmit = $derived(errors.length === 0);
+
+	async function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
+		if (!canSubmit) return;
 		loading = true;
-		error = null;
-		const { data, error: err } = await faraidClient.POST('/solve', {
+		submitError = null;
+		result = null;
+
+		// Build heirs object: only include non-zero counts.
+		const heirs: Record<string, number> = {};
+		for (const [k, v] of Object.entries(counts)) {
+			if (v > 0) heirs[k] = v;
+		}
+
+		const { data, error } = await faraidClient.POST('/solve', {
 			body: {
-				deceasedSex: 'male',
-				heirs: { wife: 1, son: 1 },
-				madhhab: 'Hanafi'
+				deceasedSex: sex,
+				heirs,
+				madhhab,
+				estate: total > 0 ? {
+					total,
+					funeral,
+					debts,
+					bequests,
+					heirsConsentToExcessBequest: false
+				} : undefined
 			}
 		});
 		loading = false;
-		if (err) {
-			error = JSON.stringify(err);
+		if (error) {
+			submitError = typeof error === 'object' && 'error' in error
+				? String((error as { error: unknown }).error)
+				: JSON.stringify(error);
 		} else {
 			result = data ?? null;
 		}
@@ -33,32 +68,83 @@
 	<title>{$t('nav.calculate')} - {$t('app.title')}</title>
 </svelte:head>
 
-<h1 class="text-2xl font-bold mb-6">{$t('nav.calculate')}</h1>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+	<div>
+		<h1 class="text-2xl font-bold mb-6">{$t('nav.calculate')}</h1>
 
-<p class="text-sm text-gray-500 mb-4">
-	Full heir builder coming in the next phase. Use the smoke test below to verify the API client.
-</p>
+		<form onsubmit={handleSubmit}>
+			<DeceasedSection bind:sex bind:madhhab />
+			<EstateSection bind:total bind:funeral bind:debts bind:bequests />
+			<HeirsSection bind:counts />
 
-<button
-	onclick={smokeTest}
-	disabled={loading}
-	class="rounded bg-(--color-primary) px-4 py-2 text-white text-sm disabled:opacity-50"
->
-	{loading ? 'Loading...' : 'API Smoke Test (wife + son, Hanafi)'}
-</button>
+			{#if errors.length > 0}
+				<div class="mb-4 rounded border border-red-300 bg-red-50 px-3 py-2">
+					{#each errors as err}
+						<p class="text-sm text-red-700">{$t(err)}</p>
+					{/each}
+				</div>
+			{/if}
 
-{#if error}
-	<p class="mt-4 text-red-600 text-sm">{error}</p>
-{/if}
-
-{#if result}
-	<div class="mt-6 rounded border border-(--color-border) p-4 font-mono text-sm">
-		<p class="font-semibold mb-2">{$t('result.shares')}</p>
-		{#each result.shares ?? [] as share}
-			<div class="flex gap-4">
-				<span class="w-40">{share.relation}</span>
-				<span>{share.fraction}</span>
-			</div>
-		{/each}
+			<button
+				type="submit"
+				disabled={!canSubmit || loading}
+				class="w-full rounded bg-(--color-primary) px-4 py-3 font-semibold text-white disabled:opacity-50 hover:bg-(--color-primary-hover) transition-colors"
+			>
+				{loading ? '...' : $t('form.calculate')}
+			</button>
+		</form>
 	</div>
-{/if}
+
+	<div>
+		{#if submitError}
+			<div class="rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+				{submitError}
+			</div>
+		{/if}
+
+		{#if result}
+			<h2 class="text-xl font-bold mb-4">{$t('result.shares')}</h2>
+
+			{#if result.specialCase}
+				<p class="mb-3 text-sm italic text-gray-500">
+					{$t('result.special_case')}: {result.specialCase}
+				</p>
+			{/if}
+			{#if result.awl}
+				<p class="mb-2 text-xs text-amber-600">{$t('result.awl')}</p>
+			{/if}
+			{#if result.radd}
+				<p class="mb-2 text-xs text-amber-600">{$t('result.radd')}</p>
+			{/if}
+
+			<table class="w-full text-sm border-collapse">
+				<thead>
+					<tr class="border-b border-(--color-border)">
+						<th class="text-start py-2 font-medium">{$t('result.heir')}</th>
+						<th class="text-end py-2 font-medium">{$t('result.count')}</th>
+						<th class="text-end py-2 font-medium">{$t('result.fraction')}</th>
+						{#if (result.shares?.[0]?.amount ?? '0') !== '0'}
+							<th class="text-end py-2 font-medium">{$t('result.amount')}</th>
+						{/if}
+					</tr>
+				</thead>
+				<tbody>
+					{#each result.shares ?? [] as share}
+						<tr class="border-b border-(--color-border) last:border-0">
+							<td class="py-2">{$t(`heir.${share.relation}`)}</td>
+							<td class="text-end py-2 tabular-nums">{share.count}</td>
+							<td class="text-end py-2 tabular-nums font-mono">{share.fraction}</td>
+							{#if (result.shares?.[0]?.amount ?? '0') !== '0'}
+								<td class="text-end py-2 tabular-nums">{share.amount}</td>
+							{/if}
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+
+			{#if result.needsReview}
+				<p class="mt-4 text-sm text-amber-600">{$t('result.needs_review')}</p>
+			{/if}
+		{/if}
+	</div>
+</div>
