@@ -37,6 +37,8 @@ func (s *Server) Router() http.Handler {
 		r.Post("/cases", s.handleCreateCase)
 		r.Get("/cases/{id}", s.handleGetCase)
 		r.Delete("/cases/{id}", s.handleDeleteCase)
+
+		r.Post("/export", s.handleExport)
 	})
 	return r
 }
