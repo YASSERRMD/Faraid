@@ -95,6 +95,18 @@ func TestAllRelations(t *testing.T) {
 	}
 }
 
+func TestParseRelation(t *testing.T) {
+	for _, r := range AllRelations() {
+		got, ok := ParseRelation(r.String())
+		if !ok || got != r {
+			t.Errorf("ParseRelation(%q) = %v, %v; want %v", r.String(), got, ok, r)
+		}
+	}
+	if _, ok := ParseRelation("third cousin"); ok {
+		t.Error("unknown name should not parse")
+	}
+}
+
 func TestHeirsCollection(t *testing.T) {
 	h := New()
 	if !h.Empty() {

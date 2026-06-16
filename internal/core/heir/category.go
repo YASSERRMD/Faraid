@@ -45,3 +45,14 @@ func AllRelations() []Relation {
 	sort.Slice(rs, func(i, j int) bool { return rs[i] < rs[j] })
 	return rs
 }
+
+// ParseRelation returns the relation whose label matches name (the same label
+// String returns), or ok false when no relation matches.
+func ParseRelation(name string) (Relation, bool) {
+	for r, d := range descriptors {
+		if d.name == name {
+			return r, true
+		}
+	}
+	return RelationInvalid, false
+}
