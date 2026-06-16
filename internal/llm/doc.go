@@ -5,5 +5,7 @@
 // Nothing under internal/core may import this package. The LLM is never the
 // source of a legal result: its output is always validated against the
 // deterministic engine, sits behind a feature flag, and defaults off. The
-// adapters are introduced in Phase 37.
+// Completer interface is implemented by thin raw-HTTP adapters for
+// OpenAI-compatible and Anthropic backends, so the calling code carries no
+// vendor lock-in.
 package llm
