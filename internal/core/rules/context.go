@@ -41,3 +41,11 @@ func (c Context) SiblingCount() int {
 		c.Count(heir.ConsanguineBrother) + c.Count(heir.ConsanguineSister) +
 		c.Count(heir.UterineBrother) + c.Count(heir.UterineSister)
 }
+
+// UterineCount returns the number of uterine (maternal) siblings present,
+// brothers and sisters together. They inherit a single share equally regardless
+// of sex: one sixth for a single uterine sibling, one third shared for two or
+// more.
+func (c Context) UterineCount() int {
+	return c.Count(heir.UterineBrother) + c.Count(heir.UterineSister)
+}
