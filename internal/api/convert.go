@@ -8,9 +8,9 @@ import (
 	"github.com/YASSERRMD/Faraid/internal/core/solver"
 )
 
-// toCase maps a solve request to a core case and a madhhab profile, validating
-// the inputs along the way.
-func toCase(req solveRequest) (estate.Case, solver.Madhhab, error) {
+// toCaseInput maps a request to a core case (deceased sex, estate, heirs)
+// without resolving a madhhab, so it can be solved across one or all schools.
+func toCaseInput(req solveRequest) (estate.Case, error) {
 	var sex heir.Sex
 	switch req.DeceasedSex {
 	case "male":
@@ -18,24 +18,19 @@ func toCase(req solveRequest) (estate.Case, solver.Madhhab, error) {
 	case "female":
 		sex = heir.Female
 	default:
-		return estate.Case{}, solver.Madhhab{}, fmt.Errorf("invalid deceasedSex %q", req.DeceasedSex)
-	}
-
-	m, ok := solver.MadhhabByName(req.Madhhab)
-	if !ok {
-		return estate.Case{}, solver.Madhhab{}, fmt.Errorf("unknown madhhab %q", req.Madhhab)
+		return estate.Case{}, fmt.Errorf("invalid deceasedSex %q", req.DeceasedSex)
 	}
 
 	h := heir.New()
 	for name, count := range req.Heirs {
 		r, ok := heir.ParseRelation(name)
 		if !ok {
-			return estate.Case{}, solver.Madhhab{}, fmt.Errorf("unknown heir %q", name)
+			return estate.Case{}, fmt.Errorf("unknown heir %q", name)
 		}
 		h.Set(r, count)
 	}
 
-	c := estate.Case{
+	return estate.Case{
 		DeceasedSex: sex,
 		Estate: estate.Estate{
 			Total:                       req.Estate.Total,
@@ -45,6 +40,18 @@ func toCase(req solveRequest) (estate.Case, solver.Madhhab, error) {
 			HeirsConsentToExcessBequest: req.Estate.HeirsConsentToExcessBequest,
 		},
 		Heirs: h,
+	}, nil
+}
+
+// toCase maps a solve request to a core case and a madhhab profile.
+func toCase(req solveRequest) (estate.Case, solver.Madhhab, error) {
+	c, err := toCaseInput(req)
+	if err != nil {
+		return estate.Case{}, solver.Madhhab{}, err
+	}
+	m, ok := solver.MadhhabByName(req.Madhhab)
+	if !ok {
+		return estate.Case{}, solver.Madhhab{}, fmt.Errorf("unknown madhhab %q", req.Madhhab)
 	}
 	return c, m, nil
 }
