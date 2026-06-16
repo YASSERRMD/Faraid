@@ -1,0 +1,48 @@
+[
+  {
+    "name": "gharrawayn with husband",
+    "reference": "Umariyyatan",
+    "deceasedSex": "female",
+    "madhhab": "Hanafi",
+    "heirs": {"husband": 1, "father": 1, "mother": 1},
+    "expected": {"husband": "1/2", "mother": "1/6", "father": "1/3"},
+    "specialCase": "gharrawayn"
+  },
+  {
+    "name": "gharrawayn with wife",
+    "reference": "Umariyyatan",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"wife": 1, "father": 1, "mother": 1},
+    "expected": {"wife": "1/4", "mother": "1/4", "father": "1/2"},
+    "specialCase": "gharrawayn"
+  },
+  {
+    "name": "akdariyyah",
+    "reference": "grandfather plus sister anomaly",
+    "deceasedSex": "female",
+    "madhhab": "Shafii",
+    "heirs": {"husband": 1, "mother": 1, "paternal grandfather": 1, "full sister": 1},
+    "expected": {"husband": "1/3", "mother": "2/9", "paternal grandfather": "8/27", "full sister": "4/27"},
+    "specialCase": "akdariyyah",
+    "base": 27
+  },
+  {
+    "name": "mushtaraka sharing view",
+    "reference": "Maliki and Shafi'i share",
+    "deceasedSex": "female",
+    "madhhab": "Maliki",
+    "heirs": {"husband": 1, "mother": 1, "uterine brother": 2, "full brother": 1},
+    "expected": {"husband": "1/2", "mother": "1/6", "uterine brother": "2/9", "full brother": "1/9"},
+    "specialCase": "mushtaraka"
+  },
+  {
+    "name": "mushtaraka non sharing view",
+    "reference": "Hanafi and Hanbali do not share",
+    "deceasedSex": "female",
+    "madhhab": "Hanafi",
+    "heirs": {"husband": 1, "mother": 1, "uterine brother": 2, "full brother": 1},
+    "expected": {"husband": "1/2", "mother": "1/6", "uterine brother": "1/3", "full brother": "0"},
+    "specialCase": "mushtaraka"
+  }
+]

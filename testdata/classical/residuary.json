@@ -1,0 +1,66 @@
+[
+  {
+    "name": "son alone",
+    "reference": "sole residuary",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"son": 1},
+    "expected": {"son": "1"}
+  },
+  {
+    "name": "father alone",
+    "reference": "sole residuary",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"father": 1},
+    "expected": {"father": "1"}
+  },
+  {
+    "name": "full brother alone",
+    "reference": "sole residuary",
+    "deceasedSex": "male",
+    "madhhab": "Shafii",
+    "heirs": {"full brother": 1},
+    "expected": {"full brother": "1"}
+  },
+  {
+    "name": "full paternal uncle alone",
+    "reference": "sole residuary",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"full paternal uncle": 1},
+    "expected": {"full paternal uncle": "1"}
+  },
+  {
+    "name": "daughter son's son and son's daughter",
+    "reference": "son's son makes son's daughter residuary",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"daughter": 1, "son's son": 1, "son's daughter": 1},
+    "expected": {"daughter": "1/2", "son's son": "1/3", "son's daughter": "1/6"}
+  },
+  {
+    "name": "full brother excludes consanguine brother",
+    "reference": "nearer agnate",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"full brother": 1, "consanguine brother": 1},
+    "expected": {"full brother": "1", "consanguine brother": "0"}
+  },
+  {
+    "name": "full uncle excludes consanguine uncle",
+    "reference": "nearer agnate",
+    "deceasedSex": "male",
+    "madhhab": "Shafii",
+    "heirs": {"full paternal uncle": 1, "consanguine paternal uncle": 1},
+    "expected": {"full paternal uncle": "1", "consanguine paternal uncle": "0"}
+  },
+  {
+    "name": "wife and full paternal uncle",
+    "reference": "spouse then residuary",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"wife": 1, "full paternal uncle": 1},
+    "expected": {"wife": "1/4", "full paternal uncle": "3/4"}
+  }
+]

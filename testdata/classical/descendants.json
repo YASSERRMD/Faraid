@@ -1,0 +1,74 @@
+[
+  {
+    "name": "one daughter and full brother",
+    "reference": "Quran 4:11, residuary",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"daughter": 1, "full brother": 1},
+    "expected": {"daughter": "1/2", "full brother": "1/2"}
+  },
+  {
+    "name": "two daughters and father",
+    "reference": "Quran 4:11",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"daughter": 2, "father": 1},
+    "expected": {"daughter": "2/3", "father": "1/3"}
+  },
+  {
+    "name": "two daughters and full brother",
+    "reference": "Quran 4:11, residuary",
+    "deceasedSex": "male",
+    "madhhab": "Shafii",
+    "heirs": {"daughter": 2, "full brother": 1},
+    "expected": {"daughter": "2/3", "full brother": "1/3"}
+  },
+  {
+    "name": "son and daughter",
+    "reference": "Quran 4:11, two to one",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"son": 1, "daughter": 1},
+    "expected": {"son": "2/3", "daughter": "1/3"}
+  },
+  {
+    "name": "two sons and two daughters",
+    "reference": "Quran 4:11, two to one",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"son": 2, "daughter": 2},
+    "expected": {"son": "2/3", "daughter": "1/3"}
+  },
+  {
+    "name": "daughter son's daughter and father",
+    "reference": "completion to two thirds",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"daughter": 1, "son's daughter": 1, "father": 1},
+    "expected": {"daughter": "1/2", "son's daughter": "1/6", "father": "1/3"}
+  },
+  {
+    "name": "son's daughter and full brother",
+    "reference": "Quran 4:11 by analogy, residuary",
+    "deceasedSex": "male",
+    "madhhab": "Shafii",
+    "heirs": {"son's daughter": 1, "full brother": 1},
+    "expected": {"son's daughter": "1/2", "full brother": "1/2"}
+  },
+  {
+    "name": "son's son and son's daughter",
+    "reference": "Quran 4:11 by analogy, two to one",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"son's son": 1, "son's daughter": 1},
+    "expected": {"son's son": "2/3", "son's daughter": "1/3"}
+  },
+  {
+    "name": "two daughters son's daughter and son's son",
+    "reference": "son's son makes son's daughter residuary",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"daughter": 2, "son's daughter": 1, "son's son": 1},
+    "expected": {"daughter": "2/3", "son's son": "2/9", "son's daughter": "1/9"}
+  }
+]

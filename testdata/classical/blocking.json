@@ -1,0 +1,50 @@
+[
+  {
+    "name": "son excludes full brother",
+    "reference": "hajb hirman",
+    "deceasedSex": "female",
+    "madhhab": "Hanafi",
+    "heirs": {"husband": 1, "son": 1, "full brother": 1},
+    "expected": {"husband": "1/4", "son": "3/4", "full brother": "0"}
+  },
+  {
+    "name": "father and son exclude full brother",
+    "reference": "hajb hirman",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"father": 1, "son": 1, "full brother": 1},
+    "expected": {"father": "1/6", "son": "5/6", "full brother": "0"}
+  },
+  {
+    "name": "son excludes son's son",
+    "reference": "nearer descendant",
+    "deceasedSex": "male",
+    "madhhab": "Shafii",
+    "heirs": {"son": 1, "son's son": 1},
+    "expected": {"son": "1", "son's son": "0"}
+  },
+  {
+    "name": "son excludes uterine brother",
+    "reference": "descendant excludes uterine",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"son": 1, "uterine brother": 1},
+    "expected": {"son": "1", "uterine brother": "0"}
+  },
+  {
+    "name": "father excludes full brother",
+    "reference": "father excludes siblings",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"father": 1, "full brother": 1},
+    "expected": {"father": "1", "full brother": "0"}
+  },
+  {
+    "name": "mother excludes grandmother",
+    "reference": "mother excludes grandmothers",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"mother": 1, "maternal grandmother": 1, "son": 1},
+    "expected": {"mother": "1/6", "son": "5/6", "maternal grandmother": "0"}
+  }
+]

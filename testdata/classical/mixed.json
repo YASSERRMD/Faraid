@@ -1,0 +1,99 @@
+[
+  {
+    "name": "husband and two daughters with radd",
+    "reference": "radd, spouse excluded",
+    "deceasedSex": "female",
+    "madhhab": "Hanafi",
+    "heirs": {"husband": 1, "daughter": 2},
+    "expected": {"husband": "1/4", "daughter": "3/4"}
+  },
+  {
+    "name": "wife son and daughter",
+    "reference": "Quran 4:11, 4:12",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"wife": 1, "son": 1, "daughter": 1},
+    "expected": {"wife": "1/8", "son": "7/12", "daughter": "7/24"}
+  },
+  {
+    "name": "husband mother father and son",
+    "reference": "two sixths and residuary",
+    "deceasedSex": "female",
+    "madhhab": "Shafii",
+    "heirs": {"husband": 1, "mother": 1, "father": 1, "son": 1},
+    "expected": {"husband": "1/4", "mother": "1/6", "father": "1/6", "son": "5/12"}
+  },
+  {
+    "name": "son and three daughters",
+    "reference": "two to one",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"son": 1, "daughter": 3},
+    "expected": {"son": "2/5", "daughter": "3/5"}
+  },
+  {
+    "name": "husband mother and full brother",
+    "reference": "one sibling, mother one third",
+    "deceasedSex": "female",
+    "madhhab": "Hanafi",
+    "heirs": {"husband": 1, "mother": 1, "full brother": 1},
+    "expected": {"husband": "1/2", "mother": "1/3", "full brother": "1/6"}
+  },
+  {
+    "name": "wife mother and two full brothers",
+    "reference": "two siblings reduce the mother",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"wife": 1, "mother": 1, "full brother": 2},
+    "expected": {"wife": "1/4", "mother": "1/6", "full brother": "7/12"}
+  },
+  {
+    "name": "husband and father",
+    "reference": "half and residuary",
+    "deceasedSex": "female",
+    "madhhab": "Shafii",
+    "heirs": {"husband": 1, "father": 1},
+    "expected": {"husband": "1/2", "father": "1/2"}
+  },
+  {
+    "name": "wife and father",
+    "reference": "quarter and residuary",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"wife": 1, "father": 1},
+    "expected": {"wife": "1/4", "father": "3/4"}
+  },
+  {
+    "name": "two sons",
+    "reference": "equal residuary",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"son": 2},
+    "expected": {"son": "1"}
+  },
+  {
+    "name": "mother and son",
+    "reference": "one sixth and residuary",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"mother": 1, "son": 1},
+    "expected": {"mother": "1/6", "son": "5/6"}
+  },
+  {
+    "name": "wife daughter and full sister",
+    "reference": "sister residuary with a daughter",
+    "deceasedSex": "male",
+    "madhhab": "Shafii",
+    "heirs": {"wife": 1, "daughter": 1, "full sister": 1},
+    "expected": {"wife": "1/8", "daughter": "1/2", "full sister": "3/8"}
+  },
+  {
+    "name": "husband full sister and consanguine sister awl",
+    "reference": "completion then awl to seven",
+    "deceasedSex": "female",
+    "madhhab": "Hanbali",
+    "heirs": {"husband": 1, "full sister": 1, "consanguine sister": 1},
+    "expected": {"husband": "3/7", "full sister": "3/7", "consanguine sister": "1/7"},
+    "base": 7
+  }
+]
