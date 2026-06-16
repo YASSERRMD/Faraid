@@ -1,0 +1,389 @@
+openapi: 3.0.3
+info:
+  title: Faraid API
+  version: 1.0.0
+  description: >
+    HTTP contract for the Faraid Islamic inheritance calculator. The legal
+    results are computed by a deterministic engine using exact rational
+    arithmetic. Fractions and amounts are returned as exact rational strings of
+    the form "n/d". This contract is written in OpenAPI 3.0.3 so it can be both
+    validated and used for request and response contract testing with the Go
+    tooling available to the project.
+servers:
+  - url: /api/v1
+paths:
+  /healthz:
+    get:
+      operationId: health
+      summary: Liveness probe
+      responses:
+        "200":
+          description: The service is healthy.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+  /madhahib:
+    get:
+      operationId: listMadhahib
+      summary: List the supported schools
+      responses:
+        "200":
+          description: The supported madhahib.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Madhhab"
+  /solve:
+    post:
+      operationId: solve
+      summary: Solve a case under one school
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SolveRequest"
+      responses:
+        "200":
+          description: The computed distribution.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SolveResult"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /compare:
+    post:
+      operationId: compare
+      summary: Solve a case across all four schools
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CaseInput"
+      responses:
+        "200":
+          description: The per-school results.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comparison"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /cases:
+    get:
+      operationId: listCases
+      summary: List saved cases
+      responses:
+        "200":
+          description: The saved cases.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SavedCase"
+    post:
+      operationId: createCase
+      summary: Save a case
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaveCaseRequest"
+      responses:
+        "201":
+          description: The saved case.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedCase"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /cases/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: getCase
+      summary: Fetch a saved case
+      responses:
+        "200":
+          description: The saved case.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedCase"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      operationId: deleteCase
+      summary: Delete a saved case
+      responses:
+        "204":
+          description: The case was deleted.
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /export:
+    post:
+      operationId: export
+      summary: Export a result as JSON or PDF
+      parameters:
+        - name: format
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [json, pdf]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SolveRequest"
+      responses:
+        "200":
+          description: The exported document.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SolveResult"
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /explain:
+    post:
+      operationId: explain
+      summary: Draft a plain language explanation (experimental trial tier)
+      description: >
+        Optional, non-authoritative feature behind a feature flag. The engine
+        result is the ground truth; the prose only rephrases it and is rejected
+        if it contradicts the numbers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SolveRequest"
+      responses:
+        "200":
+          description: The explanation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Explanation"
+        "404":
+          description: The trial feature is disabled.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+components:
+  responses:
+    BadRequest:
+      description: The request was invalid.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: The resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    Health:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          example: ok
+    Madhhab:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          enum: [Hanafi, Maliki, Shafii, Hanbali]
+    Heirs:
+      type: object
+      description: A map of heir relation label to the count present.
+      additionalProperties:
+        type: integer
+        minimum: 0
+      example:
+        husband: 1
+        son: 2
+        daughter: 1
+    Estate:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          minimum: 0
+        funeral:
+          type: integer
+          format: int64
+          minimum: 0
+        debts:
+          type: integer
+          format: int64
+          minimum: 0
+        bequests:
+          type: integer
+          format: int64
+          minimum: 0
+        heirsConsentToExcessBequest:
+          type: boolean
+    CaseInput:
+      type: object
+      required: [deceasedSex, heirs]
+      properties:
+        deceasedSex:
+          type: string
+          enum: [male, female]
+        estate:
+          $ref: "#/components/schemas/Estate"
+        heirs:
+          $ref: "#/components/schemas/Heirs"
+        madhhab:
+          type: string
+          enum: [Hanafi, Maliki, Shafii, Hanbali]
+    SolveRequest:
+      allOf:
+        - $ref: "#/components/schemas/CaseInput"
+        - type: object
+          required: [madhhab]
+          properties:
+            madhhab:
+              type: string
+              enum: [Hanafi, Maliki, Shafii, Hanbali]
+    HeirShare:
+      type: object
+      required: [relation, count, fraction, amount]
+      properties:
+        relation:
+          type: string
+        count:
+          type: integer
+        fraction:
+          type: string
+          example: "1/4"
+        parts:
+          type: integer
+          format: int64
+        amount:
+          type: string
+          example: "250"
+    DerivationStep:
+      type: object
+      required: [stage]
+      properties:
+        stage:
+          type: string
+        relation:
+          type: string
+        detail:
+          type: string
+        reference:
+          type: string
+        fraction:
+          type: string
+    SolveResult:
+      type: object
+      required: [madhhab, distributable, base, shares]
+      properties:
+        madhhab:
+          type: string
+        distributable:
+          type: string
+        base:
+          type: integer
+          format: int64
+        shares:
+          type: array
+          items:
+            $ref: "#/components/schemas/HeirShare"
+        excluded:
+          type: array
+          items:
+            type: string
+        specialCase:
+          type: string
+        awl:
+          type: boolean
+        radd:
+          type: boolean
+        residue:
+          type: string
+        needsReview:
+          type: boolean
+        reviewNotes:
+          type: array
+          items:
+            type: string
+        derivation:
+          type: array
+          items:
+            $ref: "#/components/schemas/DerivationStep"
+    Comparison:
+      type: object
+      required: [results]
+      properties:
+        results:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/SolveResult"
+        divergences:
+          type: array
+          items:
+            type: string
+    SaveCaseRequest:
+      type: object
+      required: [name, input]
+      properties:
+        name:
+          type: string
+        input:
+          $ref: "#/components/schemas/SolveRequest"
+    SavedCase:
+      type: object
+      required: [id, name, input]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        input:
+          $ref: "#/components/schemas/SolveRequest"
+        createdAt:
+          type: string
+          format: date-time
+    Explanation:
+      type: object
+      required: [text, consistent]
+      properties:
+        text:
+          type: string
+        consistent:
+          type: boolean
+        experimental:
+          type: boolean
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
