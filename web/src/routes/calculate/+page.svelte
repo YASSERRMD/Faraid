@@ -5,6 +5,7 @@
 	import DeceasedSection from '$lib/components/DeceasedSection.svelte';
 	import EstateSection from '$lib/components/EstateSection.svelte';
 	import HeirsSection from '$lib/components/HeirsSection.svelte';
+	import DerivationPanel from '$lib/components/DerivationPanel.svelte';
 	import { validate, type Counts } from '$lib/heirs';
 
 	type SolveResult = components['schemas']['SolveResult'];
@@ -144,6 +145,10 @@
 
 			{#if result.needsReview}
 				<p class="mt-4 text-sm text-amber-600">{$t('result.needs_review')}</p>
+			{/if}
+
+			{#if result.derivation && result.derivation.length > 0}
+				<DerivationPanel steps={result.derivation} />
 			{/if}
 		{/if}
 	</div>
