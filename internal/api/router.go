@@ -49,6 +49,7 @@ func (s *Server) Router() http.Handler {
 		r.Delete("/cases/{id}", s.handleDeleteCase)
 
 		r.Post("/export", s.handleExport)
+		r.Post("/parse", s.handleParse)
 		r.Post("/explain", s.handleExplain)
 	})
 	return r

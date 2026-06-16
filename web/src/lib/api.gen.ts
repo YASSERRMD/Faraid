@@ -127,6 +127,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Parse a natural-language case description (experimental trial tier)
+         * @description Optional, non-authoritative feature behind a feature flag. The returned proposal must be confirmed by a human before the deterministic engine is run.
+         */
+        post: operations["parseCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/explain": {
         parameters: {
             query?: never;
@@ -241,6 +261,17 @@ export interface components {
             input: components["schemas"]["SolveRequest"];
             /** Format: date-time */
             createdAt?: string;
+        };
+        ParseRequest: {
+            /** @description Natural-language description of the inheritance case (Arabic or English). */
+            text: string;
+        };
+        ParseProposal: {
+            /** @enum {string} */
+            deceasedSex: "male" | "female";
+            heirs: components["schemas"]["Heirs"];
+            /** @description Optional clarifying notes from the model. */
+            notes?: string;
         };
         Explanation: {
             text: string;
@@ -483,6 +514,47 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+        };
+    };
+    parseCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseRequest"];
+            };
+        };
+        responses: {
+            /** @description The parsed proposal. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParseProposal"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            /** @description The trial feature is disabled. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The model output could not be validated as a legal case. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
         };
     };
     explain: {

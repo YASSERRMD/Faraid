@@ -6,6 +6,8 @@
 	import EstateSection from '$lib/components/EstateSection.svelte';
 	import HeirsSection from '$lib/components/HeirsSection.svelte';
 	import DerivationPanel from '$lib/components/DerivationPanel.svelte';
+	import ExplainButton from '$lib/components/ExplainButton.svelte';
+	import NLEntry from '$lib/components/NLEntry.svelte';
 	import { validate, type Counts } from '$lib/heirs';
 
 	type SolveResult = components['schemas']['SolveResult'];
@@ -22,6 +24,12 @@
 	let result = $state<SolveResult | null>(null);
 	let submitError = $state<string | null>(null);
 	let loading = $state(false);
+	let lastRequest = $state<components['schemas']['SolveRequest'] | null>(null);
+
+	function handleParsed(parsedSex: 'male' | 'female', parsedCounts: Counts) {
+		sex = parsedSex;
+		counts = parsedCounts;
+	}
 
 	// Live validation: recomputed on every state change.
 	const errors = $derived(validate(counts, sex));
@@ -61,6 +69,7 @@
 				: JSON.stringify(error);
 		} else {
 			result = data ?? null;
+		if (result) lastRequest = { deceasedSex: sex, heirs, madhhab };
 		}
 	}
 </script>
@@ -72,6 +81,8 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 	<div>
 		<h1 class="text-2xl font-bold mb-6">{$t('nav.calculate')}</h1>
+
+		<NLEntry onParsed={handleParsed} />
 
 		<form onsubmit={handleSubmit}>
 			<DeceasedSection bind:sex bind:madhhab />
@@ -101,6 +112,10 @@
 			<div class="rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
 				{submitError}
 			</div>
+		{/if}
+
+		{#if result && lastRequest}
+			<ExplainButton request={lastRequest} />
 		{/if}
 
 		{#if result}

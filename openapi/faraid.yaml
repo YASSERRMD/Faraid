@@ -162,6 +162,37 @@ paths:
                 format: binary
         "400":
           $ref: "#/components/responses/BadRequest"
+  /parse:
+    post:
+      operationId: parseCase
+      summary: Parse a natural-language case description (experimental trial tier)
+      description: >
+        Optional, non-authoritative feature behind a feature flag. The returned
+        proposal must be confirmed by a human before the deterministic engine is
+        run.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ParseRequest"
+      responses:
+        "200":
+          description: The parsed proposal.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParseProposal"
+        "404":
+          description: The trial feature is disabled.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "422":
+          description: The model output could not be validated as a legal case.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /explain:
     post:
       operationId: explain
@@ -371,6 +402,25 @@ components:
         createdAt:
           type: string
           format: date-time
+    ParseRequest:
+      type: object
+      required: [text]
+      properties:
+        text:
+          type: string
+          description: Natural-language description of the inheritance case (Arabic or English).
+    ParseProposal:
+      type: object
+      required: [deceasedSex, heirs]
+      properties:
+        deceasedSex:
+          type: string
+          enum: [male, female]
+        heirs:
+          $ref: "#/components/schemas/Heirs"
+        notes:
+          type: string
+          description: Optional clarifying notes from the model.
     Explanation:
       type: object
       required: [text, consistent]
