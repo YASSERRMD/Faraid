@@ -1,10 +1,12 @@
 package solver
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/YASSERRMD/Faraid/internal/core/estate"
 	"github.com/YASSERRMD/Faraid/internal/core/heir"
+	"github.com/YASSERRMD/Faraid/internal/core/rational"
 )
 
 // Solve computes the full distribution of a case under a school. It settles the
@@ -65,7 +67,23 @@ func Solve(c estate.Case, m Madhhab) (Result, error) {
 	}
 	sort.Slice(result.Excluded, func(i, j int) bool { return result.Excluded[i] < result.Excluded[j] })
 
+	enforceSumInvariant(&result)
 	result.Derivation = buildDerivation(c, result)
 
 	return result, nil
+}
+
+// enforceSumInvariant flags a result whose shares plus any treasury residue do
+// not consume the whole estate. The engine never returns a silently incomplete
+// result: a configuration it does not fully resolve is marked for review.
+func enforceSumInvariant(result *Result) {
+	total := result.Residue
+	for _, s := range result.Shares {
+		total = total.Add(s.Fraction)
+	}
+	if !total.Equal(rational.One()) && !result.NeedsReview {
+		result.NeedsReview = true
+		result.ReviewNotes = append(result.ReviewNotes,
+			fmt.Sprintf("shares sum to %s, not the whole estate; configuration not fully resolved", total))
+	}
 }
