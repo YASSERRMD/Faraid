@@ -18,6 +18,7 @@ type parseProposalDTO struct {
 }
 
 func (s *Server) handleParse(w http.ResponseWriter, r *http.Request) {
+	metricParseTotal.Add(1)
 	if s.completer == nil {
 		writeError(w, http.StatusNotFound, "the trial parse feature is disabled")
 		return

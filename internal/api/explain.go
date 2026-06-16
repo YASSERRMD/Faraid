@@ -15,6 +15,7 @@ type explanationDTO struct {
 }
 
 func (s *Server) handleExplain(w http.ResponseWriter, r *http.Request) {
+	metricExplainTotal.Add(1)
 	if s.completer == nil {
 		writeError(w, http.StatusNotFound, "the trial explanation feature is disabled")
 		return
