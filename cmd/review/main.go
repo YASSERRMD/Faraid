@@ -21,7 +21,12 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	defer f.Close()
+	defer func() {
+		if cerr := f.Close(); cerr != nil {
+			fmt.Fprintln(os.Stderr, cerr)
+			os.Exit(1)
+		}
+	}()
 
 	w := func(format string, args ...any) {
 		fmt.Fprintf(f, format+"\n", args...)
