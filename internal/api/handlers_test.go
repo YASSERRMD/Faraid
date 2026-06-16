@@ -12,9 +12,15 @@ import (
 	"github.com/getkin/kin-openapi/routers/gorillamux"
 )
 
-// contractCheck serves a request with the real handler and validates both the
-// request and the response against the OpenAPI contract.
+// contractCheck serves a request with the default handler and validates both
+// the request and the response against the OpenAPI contract.
 func contractCheck(t *testing.T, method, path, body string) *httptest.ResponseRecorder {
+	return contractCheckH(t, NewServer().Router(), method, path, body)
+}
+
+// contractCheckH is contractCheck with a caller-supplied handler, for endpoints
+// that need a specially configured server (such as the trial explain tier).
+func contractCheckH(t *testing.T, handler http.Handler, method, path, body string) *httptest.ResponseRecorder {
 	t.Helper()
 	doc := loadSpec(t)
 	router, err := gorillamux.NewRouter(doc)
@@ -22,7 +28,6 @@ func contractCheck(t *testing.T, method, path, body string) *httptest.ResponseRe
 		t.Fatalf("build spec router: %v", err)
 	}
 
-	handler := NewServer().Router()
 	rec := httptest.NewRecorder()
 	handler.ServeHTTP(rec, newJSONRequest(method, path, body))
 
