@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log/slog"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -33,7 +34,12 @@ type Controls struct {
 	cap    int
 	rate   *fixedWindowLimiter
 	logger *slog.Logger
+	killed atomic.Bool
 }
+
+// Kill disables the LLM at runtime without a restart. All subsequent Complete
+// calls return ErrDisabled. The kill is permanent for this Controls instance.
+func (c *Controls) Kill() { c.killed.Store(true) }
 
 // NewControls wraps inner with the given controls.
 func NewControls(inner Completer, opts ControlsOptions) *Controls {
@@ -45,8 +51,11 @@ func NewControls(inner Completer, opts ControlsOptions) *Controls {
 }
 
 // Complete applies all active controls, then delegates to the underlying
-// Completer.
+// Completer. The kill switch takes precedence over all other checks.
 func (c *Controls) Complete(ctx context.Context, req Request) (Response, error) {
+	if c.killed.Load() {
+		return Response{}, ErrDisabled
+	}
 	if c.cap > 0 && req.MaxTokens > c.cap {
 		req.MaxTokens = c.cap
 	}
