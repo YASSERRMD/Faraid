@@ -1,0 +1,42 @@
+[
+  {
+    "name": "mother and daughter radd",
+    "reference": "radd one to three",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"mother": 1, "daughter": 1},
+    "expected": {"mother": "1/4", "daughter": "3/4"}
+  },
+  {
+    "name": "grandmother and daughter radd",
+    "reference": "radd",
+    "deceasedSex": "male",
+    "madhhab": "Maliki",
+    "heirs": {"maternal grandmother": 1, "daughter": 1},
+    "expected": {"maternal grandmother": "1/4", "daughter": "3/4"}
+  },
+  {
+    "name": "mother and two uterine radd",
+    "reference": "radd",
+    "deceasedSex": "male",
+    "madhhab": "Shafii",
+    "heirs": {"mother": 1, "uterine brother": 2},
+    "expected": {"mother": "1/3", "uterine brother": "2/3"}
+  },
+  {
+    "name": "mother daughter and son's daughter radd",
+    "reference": "radd proportional",
+    "deceasedSex": "male",
+    "madhhab": "Hanbali",
+    "heirs": {"mother": 1, "daughter": 1, "son's daughter": 1},
+    "expected": {"mother": "1/5", "daughter": "3/5", "son's daughter": "1/5"}
+  },
+  {
+    "name": "two uterine sisters radd",
+    "reference": "radd to whole",
+    "deceasedSex": "male",
+    "madhhab": "Hanafi",
+    "heirs": {"uterine sister": 2},
+    "expected": {"uterine sister": "1"}
+  }
+]
