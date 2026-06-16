@@ -93,5 +93,10 @@
   "llm.nl_warning": "The parsed case will be shown for review before calculation. Always verify with a qualified scholar.",
   "llm.nl_confirm": "Parse and review",
   "llm.inconsistent": "The AI explanation contained inconsistent fractions and was replaced with the raw derivation.",
-  "llm.badge": "AI (experimental)"
+  "llm.badge": "AI (experimental)",
+  "export.download_pdf": "Download PDF",
+  "export.copy_link": "Copy share link",
+  "export.copied": "Link copied!",
+  "export.error": "PDF export failed. Please try again.",
+  "export.link_error": "Could not save case. Please try again."
 }
