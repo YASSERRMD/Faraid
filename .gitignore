@@ -1,0 +1,29 @@
+# Local instruction and scratch files
+temp/
+
+# Go build artifacts
+/bin/
+*.exe
+*.test
+*.out
+coverage.out
+coverage.html
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Node and SvelteKit (web/)
+node_modules/
+web/.svelte-kit/
+web/build/
+web/.vercel/
+web/.output/
+dist/
+
+# Editor and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
